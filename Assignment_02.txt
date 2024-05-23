@@ -1,0 +1,179 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace InventoryManagementSystem
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Inventory inventory = new Inventory();
+            while (true)
+            {
+                Console.WriteLine("\nInventory Management System");
+                Console.WriteLine("1. Add Item");
+                Console.WriteLine("2. Display All Items");
+                Console.WriteLine("3. Find Item by ID");
+                Console.WriteLine("4. Update Item");
+                Console.WriteLine("5. Delete Item");
+                Console.WriteLine("6. Exit");
+                Console.Write("Enter your choice: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        inventory.AddItem();
+                        break;
+                    case "2":
+                        inventory.DisplayAllItems();
+                        break;
+                    case "3":
+                        inventory.FindItemById();
+                        break;
+                    case "4":
+                        inventory.UpdateItem();
+                        break;
+                    case "5":
+                        inventory.DeleteItem();
+                        break;
+                    case "6":
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
+            }
+        }
+    }
+
+    public class Item
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+
+        public Item(int id, string name, decimal price, int quantity)
+        {
+            ID = id;
+            Name = name;
+            Price = price;
+            Quantity = quantity;
+        }
+
+        public override string ToString()
+        {
+            return $"ID: {ID}, Name: {Name}, Price: {Price}, Quantity: {Quantity}";
+        }
+    }
+
+    public class Inventory
+    {
+        private List<Item> items;
+        private int nextId;
+
+        public Inventory()
+        {
+            items = new List<Item>();
+            nextId = 1;
+        }
+
+        public void AddItem()
+        {
+            Console.Write("Enter item name: ");
+            string name = Console.ReadLine();
+            Console.Write("Enter item price: ");
+            decimal price = decimal.Parse(Console.ReadLine());
+            Console.Write("Enter item quantity: ");
+            int quantity = int.Parse(Console.ReadLine());
+
+            Item newItem = new Item(nextId++, name, price, quantity);
+            items.Add(newItem);
+            Console.WriteLine("Item added successfully.");
+        }
+
+        public void DisplayAllItems()
+        {
+            if (items.Count == 0)
+            {
+                Console.WriteLine("No items in the inventory.");
+                return;
+            }
+
+            foreach (var item in items)
+            {
+                Console.WriteLine(item);
+            }
+        }
+
+        public void FindItemById()
+        {
+            Console.Write("Enter item ID: ");
+            int id = int.Parse(Console.ReadLine());
+            Item item = items.FirstOrDefault(i => i.ID == id);
+
+            if (item == null)
+            {
+                Console.WriteLine("Item not found.");
+            }
+            else
+            {
+                Console.WriteLine(item);
+            }
+        }
+
+        public void UpdateItem()
+        {
+            Console.Write("Enter item ID to update: ");
+            int id = int.Parse(Console.ReadLine());
+            Item item = items.FirstOrDefault(i => i.ID == id);
+
+            if (item == null)
+            {
+                Console.WriteLine("Item not found.");
+                return;
+            }
+
+            Console.Write("Enter new name (leave empty to keep current): ");
+            string name = Console.ReadLine();
+            if (!string.IsNullOrEmpty(name))
+            {
+                item.Name = name;
+            }
+
+            Console.Write("Enter new price (leave empty to keep current): ");
+            string priceInput = Console.ReadLine();
+            if (!string.IsNullOrEmpty(priceInput))
+            {
+                item.Price = decimal.Parse(priceInput);
+            }
+
+            Console.Write("Enter new quantity (leave empty to keep current): ");
+            string quantityInput = Console.ReadLine();
+            if (!string.IsNullOrEmpty(quantityInput))
+            {
+                item.Quantity = int.Parse(quantityInput);
+            }
+
+            Console.WriteLine("Item updated successfully.");
+        }
+
+        public void DeleteItem()
+        {
+            Console.Write("Enter item ID to delete: ");
+            int id = int.Parse(Console.ReadLine());
+            Item item = items.FirstOrDefault(i => i.ID == id);
+
+            if (item == null)
+            {
+                Console.WriteLine("Item not found.");
+                return;
+            }
+
+            items.Remove(item);
+            Console.WriteLine("Item deleted successfully.");
+        }
+    }
+}
